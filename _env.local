@@ -1,0 +1,13 @@
+NEXT_PUBLIC_BASE_URL_ONE=https://onchain.dextrading.com
+NEXT_PUBLIC_BASE_URL_TWO=https://api.dextrading.com/api
+NEXT_PUBLIC_BASE_URL_THREE=https://wallet.dextrading.com
+NEXT_PUBLIC_BASE_URL_FOUR=https://api.dextrading.com
+NEXT_PUBLIC_BASE_URL_FIVE=https://hello.dextrading.com
+NEXT_PUBLIC_BASE_URL_SIX=https://track.dextrading.com
+NEXT_PUBLIC_BASE_URL_SEVEN=https://dextrading.com
+# NEXT_PUBLIC_BASE_URL_EIGHT=https://alpha.dextrading.com
+NEXT_PUBLIC_BLOG_URL=https://blog.dextrading.com
+NEXT_PUBLIC_backend=https://api.dextrading.com
+NEXT_PUBLIC_WS_URL=wss://wallet.dextrading.com
+NEXT_PUBLIC_ACCESS_KEY=19393key
+DEBUG=true
