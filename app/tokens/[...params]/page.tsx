@@ -176,68 +176,58 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Token({ params }: Props) {
-  const searchedToken = await searchToken({
-    params: {
-      currencyAddress: params.params[1],
-    },
-  });
+    const searchedToken = await searchToken({
+        params: {
+            currencyAddress: params.params[1],
+        },
+    });
 
-  const tokenDescription = await getTokenDescription(params.params[1]);
+    const tokenDescription = await getTokenDescription(params.params[1]);
 
-  return (
-    <div>
-      <Breadcrumb className="mt-12 mb-4">
-        <BreadcrumbList>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          <BreadcrumbLink
-            href={`/tokens/${params.params[TOKEN_PAGE_PARAMS.NETWORK]}/${
-              params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS]
-            }`}
-          >
-            {minifyContract(params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS])}
-          </BreadcrumbLink>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <h1 className="text-lg md:text-xl">
-        ${searchedToken.data?.[0].attributes?.name?.split("/")[0].toUpperCase()}{" "}
-        DEX – Live {params.params[TOKEN_PAGE_PARAMS.NETWORK].toUpperCase()}{" "}
-        Market Data
-      </h1>
-      <TokenPage params={params} token={searchedToken} />
+    return (
+        <div>
+            <Breadcrumb className="mt-12 mb-4">
+                <BreadcrumbList>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                    <BreadcrumbLink
+                        href={`/tokens/${params.params[TOKEN_PAGE_PARAMS.NETWORK]}/${
+                            params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS]
+                        }`}
+                    >
+                        {minifyContract(params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS])}
+                    </BreadcrumbLink>
+                </BreadcrumbList>
+            </Breadcrumb>
 
-      {tokenDescription &&
-        tokenDescription.data &&
-        tokenDescription.data.data && (
-          <>
-            <TokenAccordion
-              tokenImageUrl={
-                searchedToken.data?.[0].seoImageUrl ??
-                `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/Shot_Token.jpg`
-              }
-              tokenDescription={tokenDescription.data.data.content}
-            />
-            {/*<HiddenElementForSeo>*/}
-            {/*  /!*<div>{tokenDescription.data.data.content}</div>*!/*/}
-            {/*    <div*/}
-            {/*        dangerouslySetInnerHTML={{*/}
-            {/*            __html: tokenDescription.data.data.content,*/}
-            {/*        }}*/}
-            {/*    />*/}
-            {/*</HiddenElementForSeo>*/}
-              <section
-                  className="mt-6 prose max-w-none text-gray-600 text-sm"
-                  aria-label="SEO Content"
-              >
-                  <h2 className="text-lg font-bold">About</h2>
-                  <div
-                      dangerouslySetInnerHTML={{
-                          __html: tokenDescription.data.data.content,
-                      }}
-                  />
-              </section>
-          </>
-        )}
-      <HowToUse />
-    </div>
-  );
+            <h1 className="text-lg md:text-xl">
+                ${searchedToken.data?.[0].attributes?.name?.split("/")[0].toUpperCase()}{" "}
+                DEX – Live {params.params[TOKEN_PAGE_PARAMS.NETWORK].toUpperCase()}{" "}
+                Market Data
+            </h1>
+
+            <TokenPage params={params} token={searchedToken} />
+
+            {tokenDescription &&
+                tokenDescription.data &&
+                tokenDescription.data.data && (
+                    <>
+                        <TokenAccordion
+                            tokenImageUrl={
+                                searchedToken.data?.[0].seoImageUrl ??
+                                `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/Shot_Token.jpg`
+                            }
+                            tokenDescription={tokenDescription.data.data.content}
+                        />
+
+                        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                            <h2 className="text-xl font-bold mb-4">About {searchedToken.data?.[0].attributes?.name}</h2>
+                            <div className="text-gray-700">
+                                {tokenDescription.data.data.content}
+                            </div>
+                        </div>
+                    </>
+                )}
+            <HowToUse />
+        </div>
+    );
 }
