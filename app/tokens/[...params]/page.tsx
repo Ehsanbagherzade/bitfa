@@ -214,9 +214,10 @@ export default async function Token({ params }: Props) {
                         <h2 className="text-2xl font-bold mb-6">
                             About {searchedToken.data?.[0].attributes?.name}
                         </h2>
-                        <div className="text-gray-700 leading-relaxed">
-                            {tokenDescription.data.data.content}
-                        </div>
+                        <div
+                            className="text-gray-700 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: tokenDescription.data.data.content }}
+                        />
                     </div>
                 )}
             <HowToUse />
