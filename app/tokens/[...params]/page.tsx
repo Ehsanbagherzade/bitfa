@@ -226,6 +226,7 @@
 //     </div>
 //   );
 // }
+
 import { getTokenDescription, searchToken } from "@/services/http/token.http";
 import { Metadata } from "next";
 import { formatNumberToSubscript } from "@/utils/PriceFormatter";
@@ -233,7 +234,6 @@ import { TOKEN_PAGE_PARAMS } from "@/utils/pageParams";
 import { minifyContract } from "@/utils/truncate";
 import HowToUse from "@/components/features/followed-wallets/HowToUse";
 
-// ✅ کامپوننت کلاینت رو به صورت داینامیک با ssr: false وارد کن
 import dynamic from 'next/dynamic';
 const TokenPageClient = dynamic(
     () => import('@/components/features/token/TokenPage'),
@@ -253,7 +253,6 @@ type searchParams = {
     network: string;
 };
 
-// Helper function for alt text
 function generateAltText(
     tokenName: string,
     dexPlatform: string,
@@ -285,7 +284,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
         const tokenData = data?.data?.[0];
 
-        // Extract token information
         const tokenName = tokenData?.attributes?.name || "Unknown Token";
         const shortTokenName = tokenName.trim().split("/")[0];
         const tokenPrice = parseFloat(
@@ -297,12 +295,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const blockchain = tokenId.split("_")[0] || "unknown blockchain";
         const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/tokens/${params.params[0]}/${params.params[1]}`;
 
-        // Get the 24h price change percentage
         const priceChange24h =
             tokenData?.attributes?.price_change_percentage?.h24 || "0";
         const formattedPriceChange = parseFloat(priceChange24h).toFixed(2) + "%";
 
-        // Get the image
         let imageUrl =
             tokenData?.imageUrl2 ||
             `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/Shot_Token.jpg`;
@@ -310,7 +306,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}${imageUrl}`;
         }
 
-        // Generate alt text
         const altText = generateAltText(
             tokenName,
             dexPlatform,
@@ -400,7 +395,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function TokenPage({ params }: Props) {
-    // همه دیتاها رو سمت سرور fetch کن
     const [searchedToken, tokenDescription] = await Promise.all([
         searchToken({
             params: {
@@ -416,7 +410,6 @@ export default async function TokenPage({ params }: Props) {
 
     return (
         <div>
-            {/* بخش استاتیک - سمت سرور رندر میشه */}
             <nav className="mt-12 mb-4">
                 <ol className="flex flex-wrap items-center gap-1.5 text-sm">
                     <a href="/" className="hover:text-foreground">Home</a>
@@ -433,18 +426,17 @@ export default async function TokenPage({ params }: Props) {
                 ${tokenName?.split("/")[0].toUpperCase()} DEX – Live {params.params[TOKEN_PAGE_PARAMS.NETWORK].toUpperCase()} Market Data
             </h1>
 
-            {/* ✅ محتوای سئو - مستقیم تو HTML میاد */}
             {content && (
-                <div className="mt-8 prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-6">About {tokenName}</h2>
-                    <div
-                        className="text-gray-700 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: content }}
-                    />
+                <div
+                    className="absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0"
+                    style={{ clip: 'rect(0, 0, 0, 0)' }}
+                    aria-hidden="false"
+                >
+                    <h2>About {tokenName}</h2>
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
                 </div>
             )}
 
-            {/* کامپوننت کلاینت - فقط سمت کاربر رندر میشه */}
             <TokenPageClient params={params} token={searchedToken} />
 
             <HowToUse />
