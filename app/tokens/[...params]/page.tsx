@@ -210,22 +210,14 @@ export default async function Token({ params }: Props) {
             {tokenDescription &&
                 tokenDescription.data &&
                 tokenDescription.data.data && (
-                    <>
-                        <TokenAccordion
-                            tokenImageUrl={
-                                searchedToken.data?.[0].seoImageUrl ??
-                                `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/Shot_Token.jpg`
-                            }
-                            tokenDescription={tokenDescription.data.data.content}
-                        />
-
-                        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-                            <h2 className="text-xl font-bold mb-4">About {searchedToken.data?.[0].attributes?.name}</h2>
-                            <div className="text-gray-700">
-                                {tokenDescription.data.data.content}
-                            </div>
+                    <div className="mt-8 prose max-w-none">
+                        <h2 className="text-2xl font-bold mb-6">
+                            About {searchedToken.data?.[0].attributes?.name}
+                        </h2>
+                        <div className="text-gray-700 leading-relaxed">
+                            {tokenDescription.data.data.content}
                         </div>
-                    </>
+                    </div>
                 )}
             <HowToUse />
         </div>
