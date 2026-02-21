@@ -218,7 +218,12 @@ export default async function Token({ params }: Props) {
               tokenDescription={tokenDescription.data.data.content}
             />
             <HiddenElementForSeo>
-              <div>{tokenDescription.data.data.content}</div>
+              {/*<div>{tokenDescription.data.data.content}</div>*/}
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: tokenDescription.data.data.content,
+                    }}
+                />
             </HiddenElementForSeo>
           </>
         )}
