@@ -119,3 +119,26 @@ export function formatNumberToSubscript(num: number) {
 
   return `$${num}`; // Default fallback
 }
+
+export const tradingViewPriceFormatter = {
+    format: function(price: number): string {
+        if (typeof price !== 'number') return String(price);
+
+        if (price === 0) return "0";
+
+        if (Math.abs(price) < 0.000001 && Math.abs(price) > 0) {
+            return formatNumberToSubscript(Math.abs(price));
+        }
+        if (Math.abs(price) >= 1) {
+            return price.toFixed(4);
+        } else if (Math.abs(price) >= 0.0001) {
+            return price.toFixed(6);
+        } else {
+            return formatNumberToSubscript(Math.abs(price));
+        }
+    },
+
+    formatNegative: function(price: number): string {
+        return '-' + this.format(Math.abs(price));
+    },
+};

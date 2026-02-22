@@ -1,6 +1,6 @@
 "use client";
 import Script from "next/script";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
 import {
   ChartingLibraryWidgetOptions,
@@ -9,7 +9,7 @@ import {
 import { IDatafeed, IOhlcvData } from "@/types/datafeed.type";
 import { getDataFeed } from "@/services/http/token.http";
 import { useQuery } from "@tanstack/react-query";
-import MyTradingView from "./MyTradingView";
+import MyTradingView, { CompareDataResult } from "./MyTradingView";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -179,6 +179,52 @@ export default function Chart({
     return mergedData;
   };
 
+  const fetchCompareTokenData = useCallback(
+    async (contractAddress: string): Promise<CompareDataResult> => {
+      const [minuteData, hourData, dayData] = await Promise.all([
+        getDataFeed({
+          params: {
+            contractAddress,
+            network,
+            timeframe: "minute",
+            aggregate: 5,
+          },
+        }),
+        getDataFeed({
+          params: {
+            contractAddress,
+            network,
+            timeframe: "hour",
+            aggregate: 1,
+          },
+        }),
+        getDataFeed({
+          params: {
+            contractAddress,
+            network,
+            timeframe: "day",
+            aggregate: 1,
+          },
+        }),
+      ]);
+      if (!minuteData?.meta) {
+        throw new Error("Could not load token data. Check the address and network.");
+      }
+      const minuteOhlcv = getOhlcvData(minuteData);
+      const hourOhlcv = getOhlcvData(hourData);
+      const dayOhlcv = getOhlcvData(dayData);
+      const ohlcvData = mergeData(minuteOhlcv, hourOhlcv, dayOhlcv);
+      if (ohlcvData.length === 0) {
+        throw new Error("No chart data available for this token.");
+      }
+      const symbolName =
+        minuteData.meta.base.name + "/" + minuteData.meta.quote.symbol;
+      const description = minuteData.meta.base.name + " Dextrading.com";
+      return { ohlcvData, symbolName, description };
+    },
+    [network]
+  );
+
   const isSuccess = useMemo(
     () => isMinuteDataSuccess && isHourDataSuccess && isDayDataSuccess,
     [isMinuteDataSuccess, isHourDataSuccess, isDayDataSuccess]
@@ -235,6 +281,7 @@ export default function Chart({
             theme={theme === "dark" ? "dark" : "light"}
             tokenExchange={tokenExchange}
             tokenDescription={tokenDescription}
+            onFetchCompareData={fetchCompareTokenData}
           />
         </div>
       ) : (
