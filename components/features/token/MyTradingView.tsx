@@ -299,11 +299,14 @@ const MyTradingView = ({
                         format: (price: number) => {
                             if (!price) return "0";
 
-                            const priceStr = Number(price).toFixed(18);
+                            const isNegative = price < 0;
+                            const absPrice = Math.abs(price);
+                            const priceStr = Number(absPrice).toFixed(18);
                             const match = priceStr.match(/^0\.0+/);
 
+                            let formatted: string;
                             if (match) {
-                                const leadingZeros = match[0].length - 2; // -2 برای "0."
+                                const leadingZeros = match[0].length - 2; // -2 for "0."
 
                                 const remaining = priceStr.substring(match[0].length);
 
@@ -319,10 +322,12 @@ const MyTradingView = ({
                                     })
                                     .join('');
 
-                                return `0.0${subscript}${remaining}`.replace(/0+$/, '');
+                                formatted = `0.0${subscript}${remaining}`.replace(/0+$/, '');
+                            } else {
+                                formatted = priceStr.replace(/\.?0+$/, "");
                             }
 
-                            return priceStr.replace(/\.?0+$/, "");
+                            return isNegative ? `-${formatted}` : formatted;
                         },
                     };
                 },
